@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Rack:</strong>
+  <%= @bikerack.rack_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @bikerack.name %>
+</p>
+
+<p>
+  <strong>Address:</strong>
+  <%= @bikerack.address %>
+</p>
+
+<p>
+  <strong>Latlng:</strong>
+  <%= @bikerack.latlng %>
+</p>
+
+<p>
+  <strong>Latitude:</strong>
+  <%= @bikerack.latitude %>
+</p>
+
+<p>
+  <strong>Longitude:</strong>
+  <%= @bikerack.longitude %>
+</p>
+
+<%= link_to 'Edit', edit_bikerack_path(@bikerack) %> |
+<%= link_to 'Back', bikeracks_path %>
