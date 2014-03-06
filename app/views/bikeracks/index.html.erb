@@ -13,7 +13,7 @@
     <div class="location-bar">
       <p class="pickup-location">
         <small>Nearest bike parking</small>
-        <span>3620 163rd Avenue Northeast</span>
+        <span id="nearest_bike_parking"></span>
       </p>
       <a href="#" class="btn search"></a>
       <a href="#" class="btn center"></a>
@@ -34,23 +34,15 @@
 
   var x = 0;
   var y = 0;
+  var bounds;
+
+  var handler = Gmaps.build('Google');
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(displayOnMap);
   }
   else {
-    handler = Gmaps.build('Google');
-
-    handler.buildMap(
-    {
-      provider: {},
-      internal: { id: 'map' }
-    },
-    function() {
-      markers = handler.addMarkers(<%=raw @hash.to_json %>);
-      handler.bounds.extendWith(markers);
-      handler.fitMapToBounds();
-    });
+    // $TODO: try to use geolocation by IP
   }
 
   function displayOnMap(position)
@@ -58,12 +50,11 @@
     x = position.coords.latitude;
     y = position.coords.longitude;
 
-    x = 47.6130609;
-    y = -122.340035;
+    //x = 47.6130609;
+    //y = -122.340035;
 
     calcRoute();
 
-    var handler = Gmaps.build('Google');
     handler.buildMap({
       provider: {
         mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -74,18 +65,7 @@
     },
     function() {
         directionsDisplay.setMap(handler.getMap());
-        handler.fitMapToBounds();
-    });
-
-    handler.buildMap(
-    {
-      provider: {},
-      internal: { id: 'map' }
-    },
-    function() {
-      markers = handler.addMarkers(<%=raw @hash.to_json %>);
-      handler.bounds.extendWith(markers);
-      handler.fitMapToBounds();
+        //handler.fitMapToBounds();
     });
   }
 
@@ -103,8 +83,45 @@ function calcRoute() {
 
 function callback(response)
 {
+  bounds = new google.maps.LatLngBounds();
+
   var origin = new google.maps.LatLng(x, y);
-  var destination = new google.maps.LatLng(response["latitude"], response["longitude"]);
+  bounds.extend(origin);
+
+  var destination = new google.maps.LatLng(response[0]["latitude"], response[0]["longitude"]);
+  bounds.extend(destination);
+
+  $('#nearest_bike_parking').html(response[0].name);
+
+  var otherRacks = new Array();
+
+  for (var i = 1; i < response.length; i++) {
+    otherRacks.push(
+      {
+        lat: response[i].latitude,
+        lng: response[i].longitude,
+        infowindow: response[i].name
+      });
+
+    point = new google.maps.LatLng(response[i].latitude, response[i].longitude);
+    bounds.extend(point);
+  }
+
+  handler.buildMap(
+    {
+      provider: {},
+      internal: { id: 'map' }
+    },
+    function() {
+      markers = handler.addMarkers(
+        otherRacks,
+        {
+          draggable: false,
+          animation: google.maps.Animation.DROP
+        });
+      //handler.bounds.extendWith(markers);
+      //handler.fitMapToBounds();
+    });
 
   var request = {
       origin: origin,
@@ -112,8 +129,11 @@ function callback(response)
       travelMode:  google.maps.TravelMode.BICYCLING
   };
 
+  handler.getMap().fitBounds(bounds);
+
   directionsService.route(request, function(response, status) {
     if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setOptions({ preserveViewport: true });
       directionsDisplay.setDirections(response);
     }
   });

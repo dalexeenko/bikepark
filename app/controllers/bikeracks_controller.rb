@@ -31,7 +31,7 @@ class BikeracksController < ApplicationController
       marker.infowindow rack.address
     end
 
-    render :json => racks[0]
+    render :json => racks
   end
 
   # GET /bikeracks
