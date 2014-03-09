@@ -20,6 +20,9 @@ class Bikerack < ActiveRecord::Base
 
     racks.each do |rack|
       unless exists? :name => rack.objectid
+        # $TODO: get proper fix for google's geocoder OVER_QUERY_LIMIT
+        sleep 1
+
         create!(
           :rack_id => rack.objectid,
           :name => rack.unitdesc,
