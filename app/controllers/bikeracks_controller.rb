@@ -1,8 +1,8 @@
 class BikeracksController < ApplicationController
   before_action :set_bikerack, only: [:show, :edit, :update, :destroy]
 
-  # Find 5 bikeracks closest to the given coordinates
-  def find
+  # Find bikeracks closest to the given coordinates
+  def getNearestBikeracks
     point = RGeo::Geographic.spherical_factory(:srid => 4326).point(params[:longitude].to_f, params[:latitude].to_f)
 
     # MAX number of bikeracks to look for
@@ -17,17 +17,17 @@ class BikeracksController < ApplicationController
       FROM Bikeracks
       WHERE ST_Distance(
         Bikeracks.latlng,
-          ST_GeomFromText('#{ point }')) > 0
-        ORDER by ST_Distance(
-          Bikeracks.latlng,
-          ST_GeomFromText('#{ point }')
-        )
-        limit #{number};")
+        ST_GeomFromText('#{ point }')) > 0
+      ORDER by ST_Distance(
+        Bikeracks.latlng,
+        ST_GeomFromText('#{ point }')
+      )
+      limit #{number};")
 
     render :json => racks
   end
 
-  def find2
+  def getBikeracksWithinBounds
     swLat = params[:swLat].to_f;
     swLng = params[:swLng].to_f;
     neLat = params[:neLat].to_f;
