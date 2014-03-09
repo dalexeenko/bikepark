@@ -9,6 +9,7 @@ Bikepark::Application.routes.draw do
 
   # $TODO: make a direct bikerack#find XHR call from index.html.erb
   match '/bikerack',  to: 'bikeracks#find', via: :post
+  match '/bikerack2',  to: 'bikeracks#find2', via: :post
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
