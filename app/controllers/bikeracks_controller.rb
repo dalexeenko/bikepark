@@ -6,47 +6,53 @@ class BikeracksController < ApplicationController
     point = RGeo::Geographic.spherical_factory(:srid => 4326).point(params[:longitude].to_f, params[:latitude].to_f)
 
     # MAX number of bikeracks to look for
-    number = 1
+    limit = 1
 
     racks = Bikerack.find_by_sql("
       SELECT *,
       ST_Distance(
         Bikeracks.latlng,
-        ST_GeomFromText('#{ point } ')
+        ST_GeomFromText('#{point}')
       ) as distance
       FROM Bikeracks
       WHERE ST_Distance(
         Bikeracks.latlng,
-        ST_GeomFromText('#{ point }')) > 0
+        ST_GeomFromText('#{point}')) > 0
       ORDER by ST_Distance(
         Bikeracks.latlng,
-        ST_GeomFromText('#{ point }')
+        ST_GeomFromText('#{point}')
       )
-      limit #{number};")
+      LIMIT #{limit};")
 
     render :json => racks
   end
 
+  # Find bikeracks within the gives coordinates (defined by southwest and northeast corners)
   def getBikeracksWithinBounds
     swLat = params[:swLat].to_f;
     swLng = params[:swLng].to_f;
     neLat = params[:neLat].to_f;
     neLng = params[:neLng].to_f;
 
-    racks = Bikerack.find_by_sql("
+    racks = Bikerack.find_by_sql(["
       SELECT *
       FROM Bikeracks
       WHERE ST_Within(
         Bikeracks.latlng::geometry,
         ST_GeomFromText(
             'POLYGON((
-                #{swLng} #{swLat},
-                #{neLng} #{swLat},
-                #{neLng} #{neLat},
-                #{swLng} #{neLat},
-                #{swLng} #{swLat}))',
+                ? ?,
+                ? ?,
+                ? ?,
+                ? ?,
+                ? ?))',
             4326))
-      ;")
+      ;",
+      swLng, swLat,
+      neLng, swLat,
+      neLng, neLat,
+      swLng, neLat,
+      swLng, swLat])
 
     render :json => racks
   end

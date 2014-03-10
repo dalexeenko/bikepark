@@ -142,8 +142,12 @@
       }
     }
 
-    var markerClusterOptions = {gridSize: 50, maxZoom: 16};
-    var markerCluster = new MarkerClusterer(map, markersArray, markerClusterOptions);
+    var markerClusterOptions = {
+      gridSize: 50,
+      maxZoom: 16
+    };
+    var markerCluster = new MarkerClusterer(map, markersArray,
+      markerClusterOptions);
   }
 
   function calculateRoute() {
@@ -189,7 +193,6 @@
       request,
       function (response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
-          //directionsDisplay.setOptions({ preserveViewport: true });
           directionsDisplay.setDirections(response);
         }
       });
