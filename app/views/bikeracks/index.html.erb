@@ -3,8 +3,7 @@
 
 <div class="request-view page full" style="display: block;">
   <header>
-    <div class="logo"></div>
-    <a href="#" class="btn left account"></a>
+    <div class="logo">Bikepark</div>
   </header>
 
   <div class="background-view"></div>
@@ -15,8 +14,6 @@
         <small>Nearest bike parking</small>
         <span id="nearest_bike_parking">N/A</span>
       </p>
-      <a href="#" class="btn search"></a>
-      <a href="#" class="btn center"></a>
     </div>
     <div class="trip-status-bar">
       <p>Pro Tip</p>
@@ -37,6 +34,7 @@
 
   var map;
   var markers = [];
+  var markersArray = [];
   var directionsDisplay;
 
   function initialize(position) {
@@ -95,9 +93,9 @@
         var bounds = map.getBounds();
 
         // Remove the markers that fall out of the viewport
-        for (var i = 0; i < markers.length; i++) {
-          if (!bounds.contains(markers[i].getPosition())) {
-            markers[i].setMap(null);
+        for (var key in markers) {
+          if (!bounds.contains(markers[key].getPosition())) {
+            markers[key].setMap(null);
           }
         }
 
@@ -132,14 +130,20 @@
     for (var i = 0; i < response.length; i++) {
       var point = new google.maps.LatLng(response[i].latitude, response[i].longitude);
 
-      var marker = new google.maps.Marker({
-        map: map,
-        position: point,
-        position: point,
-      });
+      if (!(point.toString() in markers)) {
+        var marker = new google.maps.Marker({
+          map: map,
+          position: point,
+          animation: google.maps.Animation.DROP
+        });
 
-      markers.push(marker);
+        markers[point.toString()] = marker;
+        markersArray.push(marker);
+      }
     }
+
+    var markerClusterOptions = {gridSize: 50, maxZoom: 16};
+    var markerCluster = new MarkerClusterer(map, markersArray, markerClusterOptions);
   }
 
   function calculateRoute() {
@@ -185,7 +189,7 @@
       request,
       function (response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
-          directionsDisplay.setOptions({ preserveViewport: true });
+          //directionsDisplay.setOptions({ preserveViewport: true });
           directionsDisplay.setDirections(response);
         }
       });

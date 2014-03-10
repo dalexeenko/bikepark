@@ -44,29 +44,22 @@ a {
 }
 
 .page header, .page footer {
-  left: 0;
-  position: absolute;
-  right: 0;
-  z-index: 10;
 }
 
 .page header {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  background: #fff repeat-x;
+  background: rgba(56,207,211,1);
   font-size: 17px;
   height: 44px;
   line-height: 44px;
   text-align: center;
   text-transform: uppercase;
   top: 0;
-}
-
-@media(-webkit-min-device-pixel-ratio:1.25),(min-resolution:120dpi){
-  .page header{ 
-    background-image: #fff;
-    background-size: 2px 44px
-  }
+  left: 0;
+  position: absolute;
+  width: 100%;
+  z-index: 20;
 }
 
 .request-view .location-bar {

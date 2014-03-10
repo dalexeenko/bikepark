@@ -1,28 +1,21 @@
-== README
+== Bikepark
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Simple Ruby on Rails app that shows directions to the nearest bicycle parking.
 
-Things you may want to cover:
+Bicycle parking data comes from {City of Seattle Bicycle Racks dataset}[https://data.seattle.gov/Transportation/City-of-Seattle-Bicycle-Racks/vncn-umqp].
 
-* Ruby version
+Frontend is a simple HTML5 + Javascript page that:
 
-* System dependencies
+* Uses HTML5 Geolocation to locate user's position
 
-* Configuration
+* Uses Google Maps Javascript API to show bike racks that are close to that location. Only bike racks within current viewport are rendered
 
-* Database creation
+* Google Maps MarkerClusterer is used to group bike racks into clusters
 
-* Database initialization
+Backend is a Rails app that exposes two APIs via Bikeracks controller:
 
-* How to run the test suite
+* getBikeracksWithinBounds that takes southwest & northeast corners' coordinates and returns all bikeracks that are located within those coordinates
 
-* Services (job queues, cache servers, search engines, etc.)
+* getNearestBikeracks that takes a set of coordinates and returns N number of bikeracks closest to those coordinates
 
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+Bicycle parking data is fetched by Heroku Scheduler every 24 hours and stored in a PostgreSQL database + {PostGIS extension}[http://postgis.net].

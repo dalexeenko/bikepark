@@ -35,9 +35,6 @@ gem 'activerecord-postgis-adapter'
 # Complete Ruby geocoding solution
 gem 'geocoder'
 
-# Google map + overlays creation in Ruby
-gem 'gmaps4rails'
-
 # PostgreSQL
 gem 'pg'
 
