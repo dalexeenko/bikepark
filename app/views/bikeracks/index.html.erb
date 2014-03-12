@@ -27,15 +27,28 @@
 
 <script type="text/javascript">
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(initialize);
+    navigator.geolocation.getCurrentPosition(initialize, initializeWithDefaultCoordinates);
   } else {
     // $TODO: try to use geolocation by IP
+    initializeWithDefaultCoordinates();
   }
 
   var map;
   var markers = [];
   var markersArray = [];
   var directionsDisplay;
+
+  function initializeWithDefaultCoordinates()
+  {
+    var position = {
+      coords: {
+        latitude: 37.09024,
+        longitude: -95.712891
+      }
+    };
+
+    initialize(position);
+  }
 
   function initialize(position) {
     var mapOptions = {
@@ -190,8 +203,20 @@
     directionsService.route(
       request,
       function (response, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-          directionsDisplay.setDirections(response);
+        switch (status) {
+          case google.maps.DirectionsStatus.OK:
+            directionsDisplay.setDirections(response);
+            break;
+          case google.maps.DirectionsStatus.UNKNOWN_ERROR:
+            alert('Something went wrong. Please try again later.');
+            break;
+          case google.maps.DirectionsStatus.ZERO_RESULTS:
+          case google.maps.DirectionsStatus.NOT_FOUND:
+            alert('We could not find any nike racks nearby.');
+            break;
+          default:
+            alert('Something went wrong.');
+            break;
         }
       });
   }
