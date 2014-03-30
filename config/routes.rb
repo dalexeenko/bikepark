@@ -7,10 +7,6 @@ Bikepark::Application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'bikeracks#index'
 
-  # $TODO: make a direct bikerack#find XHR call from index.html.erb
-  match '/getNearestBikeracks',  to: 'bikeracks#getNearestBikeracks', via: :post
-  match '/getBikeracksWithinBounds',  to: 'bikeracks#getBikeracksWithinBounds', via: :post
-
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

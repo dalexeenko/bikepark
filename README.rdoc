@@ -10,12 +10,12 @@ Frontend is a simple HTML5 + Javascript page that:
 
 * Uses Google Maps Javascript API to show bike racks that are close to that location. Only bike racks within current viewport are rendered
 
-* Google Maps MarkerClusterer is used to group bike racks into clusters
+* Uses Google Maps MarkerClusterer to group bike racks into clusters
 
-Backend is a Rails app that exposes two APIs via Bikeracks controller:
+Backend is a Rails app that exposes the following APIs via Bikeracks controller:
 
-* getBikeracksWithinBounds that takes southwest & northeast corners' coordinates and returns all bikeracks that are located within those coordinates
+* GET bikeracks.json that takes southwest & northeast corners' coordinates and returns all bikeracks that are located within those coordinates. Example request: GET https://host/bikeracks.json?swLat=47.61&swLng=-122.35&neLat=47.61&neLng=-122.34
 
-* getNearestBikeracks that takes a set of coordinates and returns N number of bikeracks closest to those coordinates
+* GET bikeracks.json that takes user's current coordinates and returns a bikerack which is closest to these coordinates. Example request: https://host/bikeracks.json?longitude=-122.32&latitude=47.61
 
 Bicycle parking data is fetched by Heroku Scheduler every 24 hours and stored in a PostgreSQL database + {PostGIS extension}[http://postgis.net].
