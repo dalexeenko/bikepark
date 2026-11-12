@@ -19,3 +19,17 @@ Backend is a Rails app that exposes the following APIs via Bikeracks controller:
 * GET bikeracks.json that takes user's current coordinates and returns a bikerack which is closest to these coordinates. Example request: https://host/bikeracks.json?longitude=-122.32&latitude=47.61
 
 Bicycle parking data is fetched by Heroku Scheduler every 24 hours and stored in a PostgreSQL database + {PostGIS extension}[http://postgis.net].
+== Server signing secret
+
+Set SECRET_KEY_BASE in the server environment before starting the app or running
+Rails tasks. The app fails to boot when this variable is missing, blank, or shorter
+than 30 characters; there is no checked-in or development fallback. Use a separate,
+securely generated value for each environment. Generate one locally with:
+
+  ruby -rsecurerandom -e 'puts SecureRandom.hex(64)'
+
+Store the generated value in your hosting provider's secret settings or export it
+through your local shell. This app does not automatically load .env files. Never
+commit the value. The previously committed signing secret is exposed in Git
+history and must not be reused. Replacing the deployed value invalidates existing
+signed cookies, so users will need to sign in again.
